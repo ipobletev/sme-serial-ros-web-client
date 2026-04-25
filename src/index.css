@@ -338,7 +338,7 @@ body::before {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 25px;
 }
 
 .system-state-badge {
@@ -503,7 +503,7 @@ body::before {
   padding: 0 12px;
   height: 38px;
   gap: 10px;
-  width: 200px; /* Fixed width to prevent layout shifts */
+  width: 220px; /* Fixed width to prevent layout shifts */
   transition: border-color 0.3s ease;
 }
 
@@ -520,6 +520,31 @@ body::before {
 }
 
 /* Baud Trigger Custom Dropdown */
+.select-premium, .input-premium {
+  background: rgba(255, 255, 255, 0.03); /* Slight light for visibility */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  color: var(--accent-cyan);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  outline: none;
+  width: 100%;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+.input-premium:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+.input-premium::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
 .baud-trigger {
   display: flex;
   align-items: center;
