@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Zap, Play, Square, Pause, RefreshCw, RotateCcw, AlertTriangle } from 'lucide-react';
-import { buildPacket, Encoders, TOPIC_IDS } from '../utils/protocol';
+import { buildPacket, Encoders, TOPIC_IDS } from '../../utils/protocol';
 
 export default function SystemEventsControl({ sendPacket, connected }) {
   const disabled = !connected;

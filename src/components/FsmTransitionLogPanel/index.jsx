@@ -5,7 +5,7 @@ import {
   getMobilityStateName,
   getArmStateName,
   formatErrorMask,
-} from '../utils/fsmLabels';
+} from '../../utils/fsmLabels';
 
 function formatTime(ts) {
   const d = new Date(ts);

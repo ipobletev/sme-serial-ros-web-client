@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useSerial } from './useSerial';
-import { useRos } from './useRos';
+import { useSerial } from './serial/useSerial';
+import { useRos } from './ros/useRos';
+import { useTelemetryCore } from './useTelemetryCore';
 
 export const CONNECTION_MODES = {
   SERIAL: 'SERIAL',
@@ -8,42 +9,45 @@ export const CONNECTION_MODES = {
 };
 
 export function useRobotLink() {
-  const [mode, setMode] = useState(() => {
-    return localStorage.getItem('robot_link_mode') || CONNECTION_MODES.SERIAL;
+  const [connectionMode, setConnectionMode] = useState(() => {
+    return localStorage.getItem('connectionMode') || CONNECTION_MODES.SERIAL;
   });
 
-  const serial = useSerial();
-  const ros = useRos();
+  // The Telemetry Core is the "Source of Truth" for data
+  const core = useTelemetryCore();
 
-  const activeLink = mode === CONNECTION_MODES.SERIAL ? serial : ros;
+  // Transport drivers take the core to "feed" it
+  const serial = useSerial(core);
+  const ros = useRos(core);
 
-  const setConnectionMode = useCallback((newMode) => {
-    if (activeLink.connected) {
-      activeLink.disconnect();
-    }
-    setMode(newMode);
-    localStorage.setItem('robot_link_mode', newMode);
-  }, [activeLink, mode]);
+  // Persist mode choice
+  useEffect(() => {
+    localStorage.setItem('connectionMode', connectionMode);
+  }, [connectionMode]);
 
-  const connect = useCallback((options) => {
-    if (mode === CONNECTION_MODES.SERIAL) {
-      // options is baudRate for serial
-      return serial.connect(options);
-    } else {
-      // options is wsUrl for ros
-      return ros.connect(options);
-    }
-  }, [mode, serial, ros]);
+  // The active link depends on the selected mode
+  const activeLink = useMemo(() => {
+    return connectionMode === CONNECTION_MODES.SERIAL ? serial : ros;
+  }, [connectionMode, serial, ros]);
 
-  const disconnect = useCallback(() => {
-    return activeLink.disconnect();
+  const connect = useCallback((config) => {
+    activeLink.connect(config);
   }, [activeLink]);
 
-  return useMemo(() => ({
-    mode,
-    setMode: setConnectionMode,
-    ...activeLink,
+  const disconnect = useCallback(() => {
+    activeLink.disconnect();
+  }, [activeLink]);
+
+  const sendPacket = useCallback((packet) => {
+    activeLink.sendPacket(packet);
+  }, [activeLink]);
+
+  return {
+    ...activeLink, // Spreads telemetry, history, log, frequencies from core + transport state
+    connectionMode,
+    setConnectionMode,
     connect,
-    disconnect
-  }), [mode, setConnectionMode, activeLink, connect, disconnect]);
+    disconnect,
+    sendPacket
+  };
 }

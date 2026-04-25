@@ -1,5 +1,5 @@
 import { LayoutDashboard, Wrench, LineChart, Network, AlertTriangle, Table2, Gamepad2, Settings, Target } from 'lucide-react';
-import { getActiveErrors } from '../utils/ErrorMapping';
+import { getActiveErrors } from '../../utils/ErrorMapping';
 
 export default function PageSidebar({ collapsed, activeTab, onTabChange, sysStatus }) {
   const navItems = [

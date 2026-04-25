@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Cpu, Gauge, RotateCcw, ShieldAlert, ToggleLeft } from 'lucide-react';
-import ImuVisualizer from './ImuVisualizer';
+import ImuVisualizer from '../ImuVisualizer';
 import {
   getSupervisorStateName as getStateName,
   getSupervisorStateClass as getStateClass,
@@ -9,7 +9,7 @@ import {
   getArmStateName as getArmStateName,
   getArmStateClass as getArmStateClass,
   getMobilityModeName,
-} from '../utils/fsmLabels';
+} from '../../utils/fsmLabels';
 
 function getBatteryPercent(voltage, appConfig) {
   const min = appConfig?.batt_min || 10.0;

@@ -4,7 +4,7 @@ import {
   Share2, Anchor, Cpu, RotateCcw, Coffee, 
   Gamepad2, Play, Pause, Target, Battery 
 } from 'lucide-react';
-import { TOPIC_IDS, Encoders, buildPacket } from '../utils/protocol';
+import { TOPIC_IDS, Encoders, buildPacket } from '../../utils/protocol';
 
 const Header = memo(function Header({ 
   connected, 
@@ -140,7 +140,7 @@ const Header = memo(function Header({
             >
               {connectionMode === 'SERIAL' ? <Cpu size={14} /> : <Share2 size={14} />}
               <span>{connectionMode === 'SERIAL' ? 'Serial Link' : 'ROS 2'}</span>
-              <div className={`chevron ${modeMenuOpen ? 'open' : ''}`}>▼</div>
+              <div className={`chevron ${modeMenuOpen ? 'open' : ''}`}>â–¼</div>
             </button>
 
             {modeMenuOpen && (
@@ -182,7 +182,7 @@ const Header = memo(function Header({
                 >
                   <span>{baudRate}</span>
                   <span className="unit">bps</span>
-                  <div className={`chevron ${baudMenuOpen ? 'open' : ''}`}>▼</div>
+                  <div className={`chevron ${baudMenuOpen ? 'open' : ''}`}>â–¼</div>
                 </button>
                 
                 {baudMenuOpen && (

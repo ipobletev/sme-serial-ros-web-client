@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Settings2, Send, Power } from 'lucide-react';
-import { buildPacket, Encoders, TOPIC_IDS } from '../utils/protocol';
+import { buildPacket, Encoders, TOPIC_IDS } from '../../utils/protocol';
 
 /**
  * Isolated Sub-component to prevent remounting issues and allow smooth typing.

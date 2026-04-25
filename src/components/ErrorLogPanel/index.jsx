@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
 
-import { getActiveErrors } from '../utils/ErrorMapping';
+import { getActiveErrors } from '../../utils/ErrorMapping';
 
 function parseErrorFlags(flags) {
   return getActiveErrors(flags).map(err => err.label);

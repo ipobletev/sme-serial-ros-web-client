@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Gamepad2, Zap, ShieldAlert, Sliders, Play, Square, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, RotateCcw, RotateCw } from 'lucide-react';
-import { TOPIC_IDS, Encoders, buildPacket } from '../utils/protocol';
-import { getSupervisorStateName, getSupervisorStateClass } from '../utils/fsmLabels';
+import { TOPIC_IDS, Encoders, buildPacket } from '../../utils/protocol';
+import { getSupervisorStateName, getSupervisorStateClass } from '../../utils/fsmLabels';
 
 export default function OperatorControl({ sendPacket, connected, sysStatus, appConfig }) {
   const systemMaxSpeed = appConfig?.motor_speed_limit || 2.0;
