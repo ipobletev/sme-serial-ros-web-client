@@ -16,9 +16,14 @@ const Header = memo(function Header({
   onDisconnect, 
   sendPacket, 
   sidebarCollapsed, 
-  setSidebarCollapsed 
+  setSidebarCollapsed,
+  connectionMode,
+  setConnectionMode
 }) {
   const [baudRate, setBaudRate] = useState(230400);
+  const [rosUrl, setRosUrl] = useState('ws://localhost:9090');
+  const [modeMenuOpen, setModeMenuOpen] = useState(false);
+  const [baudMenuOpen, setBaudMenuOpen] = useState(false);
 
   const getBatteryPercent = (voltage, config) => {
     const min = config?.batt_min || 10.0;
@@ -126,22 +131,84 @@ const Header = memo(function Header({
           </div>
         )}
 
-        {/* Baud Rate Selector */}
+        {/* Premium Custom Dropdown */}
         {!connected && (
-          <div className="baud-selector">
-            <Cpu size={14} />
-            <select 
-              value={baudRate} 
-              onChange={(e) => setBaudRate(Number(e.target.value))}
-              className="select-transparent"
+          <div className="custom-dropdown-container">
+            <button 
+              className={`dropdown-trigger ${modeMenuOpen ? 'active' : ''}`}
+              onClick={() => { setModeMenuOpen(!modeMenuOpen); setBaudMenuOpen(false); }}
             >
-              <option value={9600}>9600 bps</option>
-              <option value={57600}>57600 bps</option>
-              <option value={115200}>115200 bps</option>
-              <option value={230400}>230400 bps</option>
-              <option value={460800}>460800 bps</option>
-              <option value={921600}>921600 bps</option>
-            </select>
+              {connectionMode === 'SERIAL' ? <Cpu size={14} /> : <Share2 size={14} />}
+              <span>{connectionMode === 'SERIAL' ? 'Serial Link' : 'ROS 2'}</span>
+              <div className={`chevron ${modeMenuOpen ? 'open' : ''}`}>▼</div>
+            </button>
+
+            {modeMenuOpen && (
+              <div className="dropdown-menu">
+                <div 
+                  className={`menu-item ${connectionMode === 'SERIAL' ? 'selected' : ''}`}
+                  onClick={() => { setConnectionMode('SERIAL'); setModeMenuOpen(false); }}
+                >
+                  <div className="item-icon"><Cpu size={16} /></div>
+                  <div className="item-content">
+                    <div className="item-title">Serial Interface</div>
+                    <div className="item-desc">Direct UART/USB connection</div>
+                  </div>
+                </div>
+                <div 
+                  className={`menu-item ${connectionMode === 'ROS' ? 'selected' : ''}`}
+                  onClick={() => { setConnectionMode('ROS'); setModeMenuOpen(false); }}
+                >
+                  <div className="item-icon"><Share2 size={16} /></div>
+                  <div className="item-content">
+                    <div className="item-title">ROS 2 Bridge</div>
+                    <div className="item-desc">Topic-based communication</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Dynamic Config (Baud or ROS URL) */}
+        {!connected && (
+          <div className="config-premium-box">
+            <div className="config-label">{connectionMode === 'SERIAL' ? 'BAUD:' : 'URL:'}</div>
+            {connectionMode === 'SERIAL' ? (
+              <div className="custom-dropdown-container">
+                <button 
+                  className={`baud-trigger ${baudMenuOpen ? 'active' : ''}`}
+                  onClick={() => { setBaudMenuOpen(!baudMenuOpen); setModeMenuOpen(false); }}
+                >
+                  <span>{baudRate}</span>
+                  <span className="unit">bps</span>
+                  <div className={`chevron ${baudMenuOpen ? 'open' : ''}`}>▼</div>
+                </button>
+                
+                {baudMenuOpen && (
+                  <div className="dropdown-menu baud-menu">
+                    {[9600, 57600, 115200, 230400, 460800, 921600].map(b => (
+                      <div 
+                        key={b}
+                        className={`menu-item-simple ${baudRate === b ? 'selected' : ''}`}
+                        onClick={() => { setBaudRate(b); setBaudMenuOpen(false); }}
+                      >
+                        <span className="val">{b}</span>
+                        <span className="unit">bps</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <input 
+                type="text" 
+                value={rosUrl} 
+                onChange={(e) => setRosUrl(e.target.value)}
+                className="input-premium"
+                placeholder="ws://localhost:9090"
+              />
+            )}
           </div>
         )}
 
@@ -159,7 +226,7 @@ const Header = memo(function Header({
             </button>
           )
         ) : (
-          <button className="btn btn-primary" onClick={() => onConnect(baudRate)}>
+          <button className="btn btn-primary" onClick={() => onConnect(connectionMode === 'SERIAL' ? baudRate : rosUrl)}>
             <Plug size={14} />
             Connect
           </button>

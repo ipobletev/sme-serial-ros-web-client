@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSerial } from './hooks/useSerial';
+import { useRobotLink } from './hooks/useRobotLink';
 import { useFsmTransitionLog } from './hooks/useFsmTransitionLog';
 import Header from './components/Header';
 import PageSidebar from './components/PageSidebar';
@@ -59,8 +59,9 @@ function FrequencyBar({ frequencies, lastTopicTicks }) {
 export default function App() {
   const { 
     connected, isMaster, connect, disconnect, sendPacket, 
-    telemetry, history, clearHistory, frequencies, lastTopicTicks, linkActive, log 
-  } = useSerial();
+    telemetry, history, clearHistory, frequencies, lastTopicTicks, linkActive, log,
+    mode, setMode 
+  } = useRobotLink();
   const [maxPoints, setMaxPoints] = useState(1000);
   const fsmTransitionLog = useFsmTransitionLog(telemetry.sysStatus);
 
@@ -100,6 +101,8 @@ export default function App() {
           sendPacket={sendPacket}
           sidebarCollapsed={sidebarCollapsed}
           setSidebarCollapsed={setSidebarCollapsed}
+          connectionMode={mode}
+          setConnectionMode={setMode}
         />
         
         <div className="app-layout">
